@@ -14,7 +14,19 @@ const CutRouter = require("./routes/CutRouter");
 const app = express();
 app.use(express.json());
 
-app.use(cors());
+const allowedOrigins = ["https://mangubat-barbershop.vercel.app"];
+
+const corsOptions = {
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+};
+
+app.use(cors(corsOptions));
 
 app.use(
   expressSession({
