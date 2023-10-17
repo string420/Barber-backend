@@ -11,7 +11,7 @@ const createBarber = async (req, res) => {
 
 const getBarberById = async (req, res) => {
   try {
-    const barber = await BarberModel.findById(req.params._id);
+    const barber = await BarberModel.findById(req.params.id);
     res.status(200).json(barber);
   } catch (err) {
     console.log(err);
