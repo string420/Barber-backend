@@ -147,7 +147,7 @@ const updateRatingById = async (req, res) => {
 const deleteAppointmentById = async (req, res, next) => {
   try {
     const appointment = await AppointmentModel.findOneAndDelete({
-      _id: req.params._id,
+      _id: req.params.id,
     });
     res.status(200).json(appointment);
   } catch (err) {
