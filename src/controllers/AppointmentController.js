@@ -1,21 +1,16 @@
 const AppointmentModel = require("../models/AppointmentModel");
 const sharp = require("sharp");
 const dayjs = require("dayjs");
+const BarberModel = require("../models/BarberModel");
 
 const createAppointment = async (req, res) => {
   try {
-    let processedBase64Image = null;
+    // const appointmentData = {
+    //   ...req.body,
+    //   base64ImageUrl: processedBase64Image,
+    // };
 
-    if (req.body.base64ImageUrl) {
-      processedBase64Image = await processBase64Image(req.body.base64ImageUrl);
-    }
-
-    const appointmentData = {
-      ...req.body,
-      base64ImageUrl: processedBase64Image,
-    };
-
-    const appointment = await AppointmentModel.create(appointmentData);
+    const appointment = await AppointmentModel.create(req.body);
     res.status(200).json(appointment);
   } catch (err) {
     console.error(err);
@@ -25,50 +20,63 @@ const createAppointment = async (req, res) => {
   }
 };
 
-async function processBase64Image(base64Image) {
-  // Convert the base64 image to a buffer
-  const inputBuffer = Buffer.from(base64Image, "base64");
+const calculateAndUpdateBarberRatings = async (req, res) => {
+  try {
+    const barberRatings = await AppointmentModel.aggregate([
+      {
+        $group: {
+          _id: "$barberName",
+          averageRating: { $avg: "$barberRating" },
+        },
+      },
+    ]);
 
-  // Analyze image dimensions
-  sharp(inputBuffer)
-    .metadata()
-    .then((metadata) => {
-      // Get the actual content dimensions
-      const actualWidth = metadata.width;
-      const actualHeight = metadata.height;
+    return res.status(200).json(barberRatings);
+  } catch (error) {
+    console.error("Error updating barber rating:", error);
+    return res
+      .status(500)
+      .json({ error: "An error occurred while updating barber rating" });
+  }
+};
 
-      // Define the desired width and height for the resized image
-      const targetWidth = 800; // Adjust to your preferred width
-      const targetHeight = Math.floor(
-        (actualHeight / actualWidth) * targetWidth
-      );
+// async function processBase64Image(base64Image) {
+//   const inputBuffer = Buffer.from(base64Image, "base64");
 
-      // Resize and crop the image to the desired dimensions
-      sharp(inputBuffer)
-        .resize(targetWidth, targetHeight)
-        .extract({
-          left: 0,
-          top: 0,
-          width: targetWidth,
-          height: targetHeight,
-        })
-        .toBuffer()
-        .then((croppedAndResizedBuffer) => {
-          // Encode the cropped and resized image back to base64
-          const croppedAndResizedBase64 =
-            croppedAndResizedBuffer.toString("base64");
+//   sharp(inputBuffer)
+//     .metadata()
+//     .then((metadata) => {
+//       const actualWidth = metadata.width;
+//       const actualHeight = metadata.height;
 
-          return croppedAndResizedBase64;
-          // Use the croppedAndResizedBase64 as needed
-        })
-        .catch((err) => {
-          console.error("Error resizing and cropping image:", err);
-        });
-    })
-    .catch((err) => {
-      console.error("Error getting image metadata:", err);
-    });
-}
+//       const targetWidth = 800;
+//       const targetHeight = Math.floor(
+//         (actualHeight / actualWidth) * targetWidth
+//       );
+
+//       sharp(inputBuffer)
+//         .resize(targetWidth, targetHeight)
+//         .extract({
+//           left: 0,
+//           top: 0,
+//           width: targetWidth,
+//           height: targetHeight,
+//         })
+//         .toBuffer()
+//         .then((croppedAndResizedBuffer) => {
+//           const croppedAndResizedBase64 =
+//             croppedAndResizedBuffer.toString("base64");
+
+//           return croppedAndResizedBase64;
+//         })
+//         .catch((err) => {
+//           console.error("Error resizing and cropping image:", err);
+//         });
+//     })
+//     .catch((err) => {
+//       console.error("Error getting image metadata:", err);
+//     });
+// }
 
 const getAppointmentById = async (req, res) => {
   try {
@@ -136,6 +144,17 @@ const updateRatingById = async (req, res) => {
   }
 };
 
+const deleteAppointmentById = async (req, res, next) => {
+  try {
+    const appointment = await AppointmentModel.findOneAndDelete({
+      _id: req.params._id,
+    });
+    res.status(200).json(appointment);
+  } catch (err) {
+    next(err);
+  }
+};
+
 module.exports = {
   createAppointment,
   getAppointmentById,
@@ -143,4 +162,6 @@ module.exports = {
   getAppointmentByEmail,
   getMonthlyAppointmentCounts,
   updateRatingById,
+  deleteAppointmentById,
+  calculateAndUpdateBarberRatings,
 };

@@ -14,4 +14,11 @@ router.get("/monthly/data", AppointmentController.getMonthlyAppointmentCounts);
 
 router.put("/update/:id", AppointmentController.updateRatingById);
 
+router.delete("/delete/:id", AppointmentController.deleteAppointmentById);
+
+router.get(
+  "/calculate/ratings",
+  AppointmentController.calculateAndUpdateBarberRatings
+);
+
 module.exports = router;

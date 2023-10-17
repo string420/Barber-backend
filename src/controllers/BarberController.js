@@ -48,10 +48,24 @@ const getByBarberName = async (req, res, next) => {
   }
 };
 
+const updateBarberStatusById = async (req, res) => {
+  try {
+    const barber = await BarberModel.findByIdAndUpdate(
+      req.params.id,
+      { $set: req.body },
+      { new: true }
+    );
+    res.status(200).json(barber);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 module.exports = {
   createBarber,
   getBarberById,
   getBarberList,
   deleteByBarberId,
   getByBarberName,
+  updateBarberStatusById,
 };

@@ -33,6 +33,9 @@ const AppointmentSchema = new mongoose.Schema(
     reason: {
       type: String,
     },
+    receipt: {
+      type: String,
+    },
   },
   {
     timestamps: true,
