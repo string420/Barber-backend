@@ -29,7 +29,7 @@ const getBarberList = async (req, res, next) => {
 
 const deleteByBarberId = async (req, res, next) => {
   try {
-    const barber = await BarberModel.findOneAndDelete({ _id: req.params._id });
+    const barber = await BarberModel.findByIdAndDelete(req.params.id);
     res.status(200).json(barber);
   } catch (err) {
     next(err);

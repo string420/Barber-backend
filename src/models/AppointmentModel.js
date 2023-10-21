@@ -33,6 +33,10 @@ const AppointmentSchema = new mongoose.Schema(
     reason: {
       type: String,
     },
+    status: {
+      type: String,
+      default: "Pending",
+    },
     receipt: {
       type: String,
     },
