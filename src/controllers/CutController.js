@@ -30,7 +30,7 @@ const getCutList = async (req, res, next) => {
 const deleteCutById = async (req, res, next) => {
   try {
     const cut = await CutModel.findOneAndDelete({
-      _id: req.params._id,
+      _id: req.params.id,
     });
     res.status(200).json(cut);
   } catch (err) {

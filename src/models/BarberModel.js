@@ -13,6 +13,9 @@ const BarberSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
+    schedule: {
+      type: [String], // Define schedule as an array of strings
+    },
   },
   {
     timestamps: true,

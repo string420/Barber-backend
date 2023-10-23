@@ -40,6 +40,14 @@ const AppointmentSchema = new mongoose.Schema(
     receipt: {
       type: String,
     },
+    userNotification: {
+      type: Boolean,
+      default: false,
+    },
+    userMarkAsRead: {
+      type: Boolean,
+      default: false,
+    },
   },
   {
     timestamps: true,
