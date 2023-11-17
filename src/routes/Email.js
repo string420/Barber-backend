@@ -1,5 +1,6 @@
 const nodemailer = require("nodemailer");
 const router = require("express").Router();
+const UserModel = require("../models/UserModel");
 
 router.post("/send", async (req, res) => {
   let { recipient } = req.body;
@@ -55,10 +56,12 @@ router.post("/send", async (req, res) => {
 router.get("/enable", async (req, res) => {
   const { email } = req.query;
 
-  try {
-    await User.findOneAndUpdate({ email }, { isEnable: true });
+  console.log("email query", email);
 
-    res.status(200).json({ status: 200, message: "User account enabled" });
+  try {
+    await UserModel.findOneAndUpdate({ email: email }, { isEnable: true });
+
+    res.status(200).json("User account successfully enabled");
   } catch (error) {
     console.error(error);
     res

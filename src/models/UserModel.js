@@ -9,7 +9,6 @@ const UserSchema = new mongoose.Schema(
     contactNumber: {
       type: String,
     },
-
     email: {
       type: String,
     },
