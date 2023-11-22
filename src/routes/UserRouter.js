@@ -9,4 +9,6 @@ router.get("/list", UserController.getUserList);
 
 router.get("/:email", UserController.getSpecificUserByEmail);
 
+router.put("/update-password/:email", UserController.updatePasswordByEmail);
+
 module.exports = router;

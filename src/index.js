@@ -10,7 +10,7 @@ const UserRouter = require("./routes/UserRouter");
 const AppointmentRouter = require("./routes/AppointmentRouter");
 const BarberRouter = require("./routes/BarberRouter");
 const CutRouter = require("./routes/CutRouter");
-const Email = require("./routes/Email");
+const EmailRouter = require("./routes/EmailRouter");
 
 const app = express();
 app.use(express.json());
@@ -52,7 +52,7 @@ app.use("/api/user", UserRouter);
 app.use("/api/appointment", AppointmentRouter);
 app.use("/api/barber", BarberRouter);
 app.use("/api/cut", CutRouter);
-app.use("/api/email", Email);
+app.use("/api/email", EmailRouter);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {

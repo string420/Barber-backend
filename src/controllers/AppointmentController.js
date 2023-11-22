@@ -1,15 +1,8 @@
 const AppointmentModel = require("../models/AppointmentModel");
-const sharp = require("sharp");
 const dayjs = require("dayjs");
-const BarberModel = require("../models/BarberModel");
 
 const createAppointment = async (req, res) => {
   try {
-    // const appointmentData = {
-    //   ...req.body,
-    //   base64ImageUrl: processedBase64Image,
-    // };
-
     const appointment = await AppointmentModel.create(req.body);
     res.status(200).json(appointment);
   } catch (err) {
@@ -39,44 +32,6 @@ const calculateAndUpdateBarberRatings = async (req, res) => {
       .json({ error: "An error occurred while updating barber rating" });
   }
 };
-
-// async function processBase64Image(base64Image) {
-//   const inputBuffer = Buffer.from(base64Image, "base64");
-
-//   sharp(inputBuffer)
-//     .metadata()
-//     .then((metadata) => {
-//       const actualWidth = metadata.width;
-//       const actualHeight = metadata.height;
-
-//       const targetWidth = 800;
-//       const targetHeight = Math.floor(
-//         (actualHeight / actualWidth) * targetWidth
-//       );
-
-//       sharp(inputBuffer)
-//         .resize(targetWidth, targetHeight)
-//         .extract({
-//           left: 0,
-//           top: 0,
-//           width: targetWidth,
-//           height: targetHeight,
-//         })
-//         .toBuffer()
-//         .then((croppedAndResizedBuffer) => {
-//           const croppedAndResizedBase64 =
-//             croppedAndResizedBuffer.toString("base64");
-
-//           return croppedAndResizedBase64;
-//         })
-//         .catch((err) => {
-//           console.error("Error resizing and cropping image:", err);
-//         });
-//     })
-//     .catch((err) => {
-//       console.error("Error getting image metadata:", err);
-//     });
-// }
 
 const getAppointmentById = async (req, res) => {
   try {
