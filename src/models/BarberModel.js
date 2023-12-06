@@ -13,8 +13,11 @@ const BarberSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
-    schedule: {
-      type: [String],
+    scheduleFrom: {
+      type: String,
+    },
+    scheduleTo: {
+      type: String,
     },
   },
   {

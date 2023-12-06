@@ -2,6 +2,9 @@ const mongoose = require("mongoose");
 
 const AppointmentSchema = new mongoose.Schema(
   {
+    fullName: {
+      type: String,
+    },
     email: {
       type: String,
       required: true,
@@ -47,6 +50,9 @@ const AppointmentSchema = new mongoose.Schema(
     userMarkAsRead: {
       type: Boolean,
       default: false,
+    },
+    comment: {
+      type: String,
     },
   },
   {
