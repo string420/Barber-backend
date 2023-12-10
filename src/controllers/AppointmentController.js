@@ -15,16 +15,34 @@ const createAppointment = async (req, res) => {
 
 const calculateAndUpdateBarberRatings = async (req, res) => {
   try {
-    const barberRatings = await AppointmentModel.aggregate([
-      {
-        $group: {
-          _id: "$barberName",
-          averageRating: { $avg: "$barberRating" },
-        },
-      },
-    ]);
+    const searchTerm = req.query.searchTerm;
 
-    return res.status(200).json(barberRatings);
+    if (searchTerm) {
+      const barberRatings = await AppointmentModel.aggregate([
+        {
+          $match: {
+            barberName: { $regex: searchTerm, $options: "i" },
+          },
+        },
+        {
+          $group: {
+            _id: "$barberName",
+            averageRating: { $avg: "$barberRating" },
+          },
+        },
+      ]);
+      return res.status(200).json(barberRatings);
+    } else {
+      const barberRatings = await AppointmentModel.aggregate([
+        {
+          $group: {
+            _id: "$barberName",
+            averageRating: { $avg: "$barberRating" },
+          },
+        },
+      ]);
+      return res.status(200).json(barberRatings);
+    }
   } catch (error) {
     console.error("Error updating barber rating:", error);
     return res
@@ -44,12 +62,24 @@ const getAppointmentById = async (req, res) => {
 
 const getAppointmentList = async (req, res, next) => {
   try {
-    const appointments = await AppointmentModel.find({
-      appointmentDate: { $gte: dayjs().format("YYYY-MM-DD") },
-    }).sort({
-      appointmentDate: -1,
-    });
-    res.status(200).json(appointments);
+    const searchTerm = req.query.searchTerm;
+
+    if (searchTerm) {
+      const appointments = await AppointmentModel.find({
+        barberName: { $regex: searchTerm, $options: "i" },
+        appointmentDate: { $gte: dayjs().format("YYYY-MM-DD") },
+      }).sort({
+        appointmentDate: -1,
+      });
+      res.status(200).json(appointments);
+    } else {
+      const appointments = await AppointmentModel.find({
+        appointmentDate: { $gte: dayjs().format("YYYY-MM-DD") },
+      }).sort({
+        appointmentDate: -1,
+      });
+      res.status(200).json(appointments);
+    }
   } catch (err) {
     next(err);
   }
